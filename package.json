@@ -1,0 +1,55 @@
+{
+  "name": "ts-mvc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "sideEffects": [
+    "*.scss",
+    "*.css"
+  ],
+  "scripts": {
+    "dev": "webpack serve --config ./webpack.common.js",
+    "build": "webpack --env production --config ./webpack.common.js",
+    "start": "serve dist",
+    "build:dev": "webpack --config ./webpack.common.js",
+    "build:stats": "webpack --env production --config ./webpack.common.js --profile --json > _bundle_stats.json"
+  },
+  "keywords": [],
+  "author": "Denny Hong",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/core-js": "^2.5.5",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^6.3.0",
+    "css-minimizer-webpack-plugin": "^3.0.2",
+    "eslint": "^7.32.0",
+    "eslint-webpack-plugin": "^3.0.1",
+    "html-webpack-plugin": "^5.3.2",
+    "imports-loader": "^3.0.0",
+    "mini-css-extract-plugin": "^2.3.0",
+    "node-sass": "^6.0.1",
+    "postcss": "^8.3.8",
+    "postcss-loader": "^6.1.1",
+    "postcss-preset-env": "^6.7.0",
+    "prettier": "^2.4.1",
+    "sass-loader": "^12.1.0",
+    "serve": "^12.0.1",
+    "style-loader": "^3.3.0",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.3",
+    "typescript-plugin-css-modules": "^3.4.0",
+    "typings-for-css-modules-loader": "^1.7.0",
+    "webpack": "^5.55.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.0",
+    "webpack-merge": "^5.8.0"
+  },
+  "dependencies": {
+    "core-js": "^3.18.1"
+  }
+}
