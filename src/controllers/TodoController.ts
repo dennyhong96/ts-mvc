@@ -39,6 +39,8 @@ export class TodoController extends Controller<ITodoState, TodoView> {
 
   @autoBind
   async handleClick(evt: MouseEvent): Promise<void> {
+    evt.stopPropagation();
+    evt.preventDefault();
     if ((evt.target as HTMLElement).tagName === "LI") {
       const todoId = (evt.target as HTMLElement).dataset.todoId;
       const todos = this.model.state.todos.map((td) =>

@@ -12,6 +12,11 @@ export class TodosRepository implements ITodosRepository {
     const res = await axios.get(this.URL);
     return res.data.map((td: ITodo) => ({ ...td, id: Utils.generateId("td") }));
   }
+  public async post(newTodo: ITodo): Promise<ITodo> {
+    return new Promise<ITodo>((resolve) => {
+      setTimeout(() => resolve(newTodo), 250);
+    });
+  }
   public async put(todos: ITodo[]): Promise<void> {
     console.log(todos);
     return new Promise((resolve) => {
