@@ -7,6 +7,7 @@ import { ITodoState } from "@/types/interfaces/ITodoState";
 import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodosRepository";
 import { TodoView } from "@/views/TodoView";
 import { ITodoController } from "@/types/interfaces/controllers/ITodoController";
+import { Utils } from "@/utils/Utils";
 
 export class TodoController extends Controller<ITodoState, TodoView> implements ITodoController {
   @inject() private todosRepository!: ITodosRepository;
@@ -17,9 +18,10 @@ export class TodoController extends Controller<ITodoState, TodoView> implements 
   }
 
   async init(): Promise<void> {
-    this.saveBackup();
-    const todos = await this.todosRepository.get();
+    const [todos] = await Utils.try(this.todosRepository.get());
+    if (!todos) return this.restoreBakcup();
     this.model.setState({ todos });
+    this.saveBackup();
   }
 
   @autoBind
@@ -44,20 +46,28 @@ export class TodoController extends Controller<ITodoState, TodoView> implements 
     evt.stopPropagation();
     evt.preventDefault();
     if ((evt.target as HTMLElement).tagName === "LI") {
+      this.saveBackup();
+
       const todoId = (evt.target as HTMLElement).dataset.todoId;
       const todos = this.model.state.todos.map((td) =>
         td.id === todoId ? { ...td, completed: !td.completed } : td,
       );
-      this.backupDataService.save(this, this.model.state);
-      await this.todosRepository.put(todos);
-      this.model.setState({ todos });
-      this.backupDataService.restore(this, this.model.state);
+      const [savedTodos] = await Utils.try(this.todosRepository.put(todos));
+      if (!savedTodos) return this.restoreBakcup();
+
+      this.model.setState({ todos: savedTodos });
+      this.saveBackup();
     } else if ((evt.target as HTMLElement).tagName === "BUTTON") {
+      this.saveBackup();
+
       const todo = (evt.target as HTMLElement).closest("li")!;
       const todoId = todo.dataset.todoId;
       const todos = this.model.state.todos.filter((td) => td.id !== todoId);
-      await this.todosRepository.put(todos);
-      this.model.setState({ todos });
+      const [savedTodos] = await Utils.try(this.todosRepository.put(todos));
+      if (!savedTodos) return this.restoreBakcup();
+
+      this.model.setState({ todos: savedTodos });
+      this.saveBackup();
     }
   }
 }

@@ -11,6 +11,7 @@ export class Controller<S, V extends View<S>> implements IController {
     view.render(model.state);
     model.registerSubscriber(view.render);
     view.attachHandler(this.handler);
+    this.saveBackup();
   }
 
   public saveBackup(): void {

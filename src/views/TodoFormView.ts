@@ -7,12 +7,16 @@ export class TodoFormView extends View<ITodoState> implements ITodoFormView<ITod
     super(container);
   }
 
+  public get inputEl(): HTMLInputElement {
+    return this.container.querySelector("input")!;
+  }
+
   public focusInput(): void {
-    this.container.querySelector("input")!.focus();
+    this.inputEl.focus();
   }
 
   public clearInput(): void {
-    this.container.querySelector("input")!.value = "";
+    this.inputEl.value = "";
   }
 
   public generateMarkup(): string {

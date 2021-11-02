@@ -6,7 +6,6 @@ import { ITodoState } from "@/types/interfaces/ITodoState";
 import { Utils } from "@/utils/Utils";
 import { inject } from "inversify-props";
 import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodosRepository";
-import { ITodo } from "@/types/interfaces/ITodo";
 import { ITodoFormController } from "@/types/interfaces/controllers/ITodoFormController";
 
 export class TodoFormController
@@ -40,19 +39,41 @@ export class TodoFormController
   async handleSubmit(evt: Event): Promise<void> {
     evt.stopPropagation();
     evt.preventDefault();
-    const form = evt.target as HTMLFormElement;
-    if (form) {
-      const input = form.querySelector("input")!;
-      const newTodo: ITodo = await this.todosRepository.post({
+
+    this.saveBackup();
+
+    const form = evt.target! as HTMLFormElement;
+    const input = form.querySelector("input")!;
+
+    const title = input.value;
+
+    const todo = {
+      id: Utils.generateId("td"),
+      title,
+      completed: false,
+    };
+
+    // Optimistic update
+    this.model.setState({
+      todos: [todo, ...this.model.state.todos],
+    });
+
+    // Network request, might fail
+    const [newTodo] = await Utils.try(
+      this.todosRepository.post({
         id: Utils.generateId("td"),
         title: input.value,
         completed: false,
-      });
-      this.model.setState({
-        todos: [newTodo, ...this.model.state.todos],
-      });
-      this.formView.clearInput();
-      this.formView.focusInput();
+      }),
+    );
+
+    if (!newTodo) {
+      this.restoreBakcup();
+      this.formView.inputEl.value = title;
+    } else {
+      this.saveBackup();
     }
+
+    this.formView.focusInput();
   }
 }

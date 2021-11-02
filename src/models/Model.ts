@@ -20,7 +20,11 @@ export class Model<T extends { [key: string | symbol]: any }> implements IModel<
   }
 
   public registerSubscriber(...subscribers: ((state: T) => void)[]): void {
-    subscribers.forEach((sub) => this._subscribers.push(sub));
+    subscribers.forEach((sub) => {
+      if (!this._subscribers.includes(sub)) {
+        this._subscribers.push(sub);
+      }
+    });
   }
 
   private publishUpdate(): void {

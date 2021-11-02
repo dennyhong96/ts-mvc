@@ -13,14 +13,15 @@ export class TodosRepository implements ITodosRepository {
     return res.data.map((td: ITodo) => ({ ...td, id: Utils.generateId("td") }));
   }
   public async post(newTodo: ITodo): Promise<ITodo> {
-    return new Promise<ITodo>((resolve) => {
-      setTimeout(() => resolve(newTodo), 250);
+    return new Promise<ITodo>((resolve, reject) => {
+      setTimeout(() => {
+        Math.random() < 0.5 ? resolve(newTodo) : reject(new Error("Mock error..."));
+      }, 250);
     });
   }
-  public async put(todos: ITodo[]): Promise<void> {
-    console.log(todos);
-    return new Promise((resolve) => {
-      setTimeout(resolve, 250);
+  public async put(todos: ITodo[]): Promise<ITodo[]> {
+    return new Promise<ITodo[]>((resolve) => {
+      setTimeout(() => resolve(todos), 250);
     });
   }
 }
