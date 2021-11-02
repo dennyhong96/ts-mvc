@@ -1,6 +1,7 @@
+import { IView } from "@/types/interfaces/views/IView";
 import { View } from "@/views/View";
 
-export class TodoPageView extends View<any> {
+export class TodoPageView extends View<any> implements IView<any> {
   constructor(public container: HTMLElement) {
     super(container);
   }

@@ -1,6 +1,7 @@
 import { autoBind } from "@/decorators/autoBind";
+import { IView } from "@/types/interfaces/views/IView";
 
-export class View<T> {
+export class View<T> implements IView<T> {
   constructor(public container: HTMLElement) {}
 
   public attachHandler(handler: (container: HTMLElement) => void): void {

@@ -1,4 +1,7 @@
-export class Model<T extends { [key: string | symbol]: any }> {
+import { autoBind } from "@/decorators/autoBind";
+import { IModel } from "@/types/interfaces/models/IModel";
+
+export class Model<T extends { [key: string | symbol]: any }> implements IModel<T> {
   private _state: T;
   private _subscribers: ((state: T) => void)[] = [];
 
@@ -6,17 +9,18 @@ export class Model<T extends { [key: string | symbol]: any }> {
     this._state = initialState;
   }
 
-  public registerSubscriber(...subscribers: ((state: T) => void)[]): void {
-    subscribers.forEach((sub) => this._subscribers.push(sub));
-  }
-
   public get state(): T {
     return this._state;
   }
 
+  @autoBind
   public setState(newState: T): void {
     this._state = newState;
     this.publishUpdate();
+  }
+
+  public registerSubscriber(...subscribers: ((state: T) => void)[]): void {
+    subscribers.forEach((sub) => this._subscribers.push(sub));
   }
 
   private publishUpdate(): void {

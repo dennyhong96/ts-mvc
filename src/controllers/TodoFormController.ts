@@ -7,8 +7,12 @@ import { Utils } from "@/utils/Utils";
 import { inject } from "inversify-props";
 import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodosRepository";
 import { ITodo } from "@/types/interfaces/ITodo";
+import { ITodoFormController } from "@/types/interfaces/controllers/ITodoFormController";
 
-export class TodoFormController extends Controller<ITodoState, TodoFormView> {
+export class TodoFormController
+  extends Controller<ITodoState, TodoFormView>
+  implements ITodoFormController
+{
   @inject() private todosRepository!: ITodosRepository;
 
   constructor(public model: Model<ITodoState>, public formView: TodoFormView) {
@@ -47,7 +51,7 @@ export class TodoFormController extends Controller<ITodoState, TodoFormView> {
       this.model.setState({
         todos: [newTodo, ...this.model.state.todos],
       });
-      input.value = "";
+      this.formView.clearInput();
       this.formView.focusInput();
     }
   }

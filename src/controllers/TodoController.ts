@@ -6,8 +6,9 @@ import { Model } from "@/models/Model";
 import { ITodoState } from "@/types/interfaces/ITodoState";
 import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodosRepository";
 import { TodoView } from "@/views/TodoView";
+import { ITodoController } from "@/types/interfaces/controllers/ITodoController";
 
-export class TodoController extends Controller<ITodoState, TodoView> {
+export class TodoController extends Controller<ITodoState, TodoView> implements ITodoController {
   @inject() private todosRepository!: ITodosRepository;
 
   constructor(public model: Model<ITodoState>, public todoView: TodoView) {
@@ -16,6 +17,7 @@ export class TodoController extends Controller<ITodoState, TodoView> {
   }
 
   async init(): Promise<void> {
+    this.saveBackup();
     const todos = await this.todosRepository.get();
     this.model.setState({ todos });
   }
@@ -46,8 +48,10 @@ export class TodoController extends Controller<ITodoState, TodoView> {
       const todos = this.model.state.todos.map((td) =>
         td.id === todoId ? { ...td, completed: !td.completed } : td,
       );
+      this.backupDataService.save(this, this.model.state);
       await this.todosRepository.put(todos);
       this.model.setState({ todos });
+      this.backupDataService.restore(this, this.model.state);
     } else if ((evt.target as HTMLElement).tagName === "BUTTON") {
       const todo = (evt.target as HTMLElement).closest("li")!;
       const todoId = todo.dataset.todoId;
