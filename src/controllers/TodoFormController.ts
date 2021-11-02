@@ -34,14 +34,16 @@ export class TodoFormController extends Controller<ITodoState, TodoFormView> {
     const form = evt.target as HTMLFormElement;
     if (form) {
       const input = form.querySelector("input")!;
-      this.model.state.todos = [
-        {
-          id: Utils.generateId(),
-          title: input.value,
-          completed: false,
-        },
-        ...this.model.state.todos,
-      ];
+      this.model.setState({
+        todos: [
+          {
+            id: Utils.generateId("td"),
+            title: input.value,
+            completed: false,
+          },
+          ...this.model.state.todos,
+        ],
+      });
       input.value = "";
       this.formView.focusInput();
     }

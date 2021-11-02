@@ -17,7 +17,7 @@ export class TodoController extends Controller<ITodoState, TodoView> {
 
   async init(): Promise<void> {
     const todos = await this.todosRepository.get();
-    this.model.state.todos = todos;
+    this.model.setState({ todos });
   }
 
   @autoBind
@@ -40,15 +40,18 @@ export class TodoController extends Controller<ITodoState, TodoView> {
   @autoBind
   handleClick(evt: MouseEvent): void {
     if ((evt.target as HTMLElement).tagName === "LI") {
-      const todoId = (evt.target as HTMLElement).dataset.id;
-      const todo = this.model.state.todos.find((td) => td.id === todoId);
-      if (todo) {
-        todo.completed = !todo.completed;
-      }
+      const todoId = (evt.target as HTMLElement).dataset.todoId;
+      this.model.setState({
+        todos: this.model.state.todos.map((td) =>
+          td.id === todoId ? { ...td, completed: !td.completed } : td,
+        ),
+      });
     } else if ((evt.target as HTMLElement).tagName === "BUTTON") {
       const todo = (evt.target as HTMLElement).closest("li")!;
-      const todoId = todo.dataset.id;
-      this.model.state.todos = this.model.state.todos.filter((td) => td.id !== todoId);
+      const todoId = todo.dataset.todoId;
+      this.model.setState({
+        todos: this.model.state.todos.filter((td) => td.id !== todoId),
+      });
     }
   }
 }

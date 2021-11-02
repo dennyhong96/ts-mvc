@@ -21,4 +21,8 @@ export class View<T> {
   public generateMarkup(_data: T): string {
     return ``;
   }
+
+  protected cn(...args: string[]): string {
+    return args.join(" ");
+  }
 }
