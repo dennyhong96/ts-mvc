@@ -3,6 +3,7 @@ import { Model } from "@/models/Model";
 import { TodoFormView } from "@/views/TodoFormView";
 import { Controller } from "@/controllers/Controller";
 import { ITodoState } from "@/types/interfaces/ITodoState";
+import { Utils } from "@/utils/Utils";
 
 export class TodoFormController extends Controller<ITodoState, TodoFormView> {
   constructor(public model: Model<ITodoState>, public formView: TodoFormView) {
@@ -33,11 +34,14 @@ export class TodoFormController extends Controller<ITodoState, TodoFormView> {
     const form = evt.target as HTMLFormElement;
     if (form) {
       const input = form.querySelector("input")!;
-      this.model.state.todos.push({
-        id: "_" + Math.random().toString(36).substr(2, 9),
-        title: input.value,
-        completed: false,
-      });
+      this.model.state.todos = [
+        {
+          id: Utils.generateId(),
+          title: input.value,
+          completed: false,
+        },
+        ...this.model.state.todos,
+      ];
       input.value = "";
       this.formView.focusInput();
     }

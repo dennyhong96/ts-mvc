@@ -14,7 +14,10 @@ export class TodoView extends View<ITodoState> {
     ${data.todos
       .map(
         (td) =>
-          `<li data-id="${td.id}" class="${td.completed ? styles.completed : ""}">${td.title}</li>`,
+          `<li data-id="${td.id}" class="${td.completed ? styles.completed : ""}">
+            ${td.title}
+            <button>x</button>
+          </li>`,
       )
       .join("")}
     </ul>

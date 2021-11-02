@@ -1,10 +1,11 @@
+import { inject } from "inversify-props";
+
 import { Controller } from "@/controllers/Controller";
 import { autoBind } from "@/decorators/autoBind";
 import { Model } from "@/models/Model";
 import { ITodoState } from "@/types/interfaces/ITodoState";
 import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodosRepository";
 import { TodoView } from "@/views/TodoView";
-import { inject } from "inversify-props";
 
 export class TodoController extends Controller<ITodoState, TodoView> {
   @inject() private todosRepository!: ITodosRepository;
@@ -44,6 +45,10 @@ export class TodoController extends Controller<ITodoState, TodoView> {
       if (todo) {
         todo.completed = !todo.completed;
       }
+    } else if ((evt.target as HTMLElement).tagName === "BUTTON") {
+      const todo = (evt.target as HTMLElement).closest("li")!;
+      const todoId = todo.dataset.id;
+      this.model.state.todos = this.model.state.todos.filter((td) => td.id !== todoId);
     }
   }
 }
