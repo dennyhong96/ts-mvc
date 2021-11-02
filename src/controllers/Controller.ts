@@ -2,7 +2,7 @@ import { Model } from "@/models/Model";
 import { View } from "@/views/View";
 
 export class Controller<S, V extends View<S>> {
-  constructor(public model: Model<S>, view: V) {
+  constructor(public model: Model<S> = new Model<any>({}), view: V) {
     view.render(model.state);
     model.registerSubscriber(view.render);
     view.attachHandler(this.handler);

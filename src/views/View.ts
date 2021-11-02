@@ -14,7 +14,6 @@ export class View<T> {
     this.container.insertAdjacentHTML("beforeend", markup);
   }
 
-  @autoBind
   public clear(): void {
     this.container.innerHTML = "";
   }

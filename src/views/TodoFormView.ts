@@ -1,8 +1,7 @@
-import { autoBind } from "@/decorators/autoBind";
-import { IState } from "@/models/TodoModel";
+import { ITodoState } from "@/types/interfaces/ITodoState";
 import { View } from "@/views/View";
 
-export class TodoFormView extends View<IState> {
+export class TodoFormView extends View<ITodoState> {
   constructor(public container: HTMLElement) {
     super(container);
   }
@@ -11,7 +10,6 @@ export class TodoFormView extends View<IState> {
     this.container.querySelector("input")?.focus();
   }
 
-  @autoBind
   public generateMarkup(): string {
     return `
     <form>

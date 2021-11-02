@@ -1,14 +1,12 @@
 import { Model } from "@/models/Model";
+import { ITodoState } from "@/types/interfaces/ITodoState";
 
-export interface ITodo {
-  name: string;
-  completed: boolean;
-}
-
-export interface IState {
-  todos: ITodo[];
-}
-
-export const todoModel = new Model<IState>({
+export const initialTodoState: ITodoState = {
   todos: [],
-});
+};
+
+export class TodoModel extends Model<ITodoState> {
+  constructor(initialTodoState: ITodoState) {
+    super(initialTodoState);
+  }
+}

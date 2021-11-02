@@ -1,11 +1,11 @@
 import { autoBind } from "@/decorators/autoBind";
 import { Model } from "@/models/Model";
-import { IState } from "@/models/TodoModel";
 import { TodoFormView } from "@/views/TodoFormView";
 import { Controller } from "@/controllers/Controller";
+import { ITodoState } from "@/types/interfaces/ITodoState";
 
-export class TodoFormController extends Controller<IState, TodoFormView> {
-  constructor(public model: Model<IState>, public formView: TodoFormView) {
+export class TodoFormController extends Controller<ITodoState, TodoFormView> {
+  constructor(public model: Model<ITodoState>, public formView: TodoFormView) {
     super(model, formView);
   }
 
@@ -34,7 +34,8 @@ export class TodoFormController extends Controller<IState, TodoFormView> {
     if (form) {
       const input = form.querySelector("input")!;
       this.model.state.todos.push({
-        name: input.value,
+        id: "_" + Math.random().toString(36).substr(2, 9),
+        title: input.value,
         completed: false,
       });
       input.value = "";
