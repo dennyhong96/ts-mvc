@@ -89,13 +89,6 @@ module.exports = (env) => {
         }),
 
         new ESLintPlugin(),
-
-        // Automatically load modules instead of having to import or require them everywhere.
-        // new ProvidePlugin({
-        //   $: "jQuery",
-        //   _: "lodash",
-        //   _join: ["lodash", "join"],
-        // }),
       ],
     },
     environmentConfig,
