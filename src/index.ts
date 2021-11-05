@@ -1,27 +1,30 @@
 import "reflect-metadata";
 
-import { Controller } from "@/controllers/Controller";
-import { TodoController } from "@/controllers/TodoController";
-import { TodoFormController } from "@/controllers/TodoFormController";
-import { initialTodoState, TodoModel } from "@/models/TodoModel";
-import { TodoFormView } from "@/views/TodoFormView";
-import { TodoPageView } from "@/views/TodoPageView";
-import { TodoView } from "@/views/TodoView";
 import { DIContainerHelper } from "@/helpers/DIContainerHelper";
+import { App } from "./app/app";
+import { ControllerHome } from "./controllers/controllerHome";
+import { ControllerAbout } from "./controllers/controllerAbout";
+import { ControllerTodo } from "./controllers/controllerTodo";
 
 DIContainerHelper.buildDIContainer();
 
+export class MyApp extends App {
+  constructor(appBody: HTMLElement) {
+    super({
+      appBody: appBody,
+    });
+
+    const router = this.getRouter();
+    router.addRoute("/", ControllerHome);
+    router.addRoute("/about", ControllerAbout);
+    router.addRoute("/todos/:todoId", ControllerTodo);
+
+    this.load();
+  }
+}
+
 function main() {
-  const todoModel = new TodoModel(initialTodoState);
-
-  const todoPageView = new TodoPageView(document.querySelector("#root")!);
-  new Controller(undefined, todoPageView);
-
-  const todoFormView = new TodoFormView(todoPageView.container.querySelector("#form")!);
-  new TodoFormController(todoModel, todoFormView);
-
-  const todoView = new TodoView(todoPageView.container.querySelector("#todo")!);
-  new TodoController(todoModel, todoView);
+  new MyApp(document.getElementById("#root")!);
 }
 
 window.addEventListener("load", main);

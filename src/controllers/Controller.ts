@@ -1,26 +1,67 @@
-import { Model } from "@/models/Model";
-import { IController } from "@/types/interfaces/controllers/IController";
-import { IBackupDataService } from "@/types/interfaces/services/IBackupDataService";
-import { View } from "@/views/View";
-import { inject } from "inversify-props";
+import { QueryParams } from "../router/router";
+import { App } from "../app/app";
 
-export class Controller<S, V extends View<S>> implements IController {
-  @inject() public backupDataService!: IBackupDataService;
+/**
+ * Each URL path in your app will have a corresponding controller, which should be a subclass of this class.
+ * The controller is responsible for rendering the entire page and handling user input as well as UI events.
+ * A new instance of the controller is created each time the user navigates to the path.
+ * Data that must live longer than the page should be stored in your App subclass.
+ *
+ * You can have a hierarchy of controllers, with parts that are common to all pages rendered by the base controller.
+ */
+export class Controller {
+  private loaded = false;
 
-  constructor(public model: Model<S> = new Model<any>({}), public view: V) {
-    view.mountElement(model.state);
-    model.registerSubscriber(view.mountElement);
-    view.attachHandler(this.handlers);
-    this.saveBackup();
+  /**
+   * Renders the page, and sets up event handlers.
+   * Note that since the user can press the refresh button of the browser, the controller is
+   * responsible for rendering the entire page, not just the portions that have changed.
+   * In your override of the load method you can start by clearing the current page contents:
+   *    $(this.app.getAppBody()).empty().off();
+   * Your override should call the base class method.
+   */
+  // @ts-ignore
+  public load(params: QueryParams): void {
+    this.loaded = true;
   }
 
-  public saveBackup(): void {
-    this.backupDataService.save(this, this.model.state);
+  /**
+   * Check if this controller is still loaded.
+   * When an ajax call returns, update the UI only if this method returns true.
+   */
+  public isLoaded(): boolean {
+    return this.loaded;
   }
 
-  public restoreBakcup(): void {
-    this.backupDataService.restore(this, this.model.state, this.model.setState);
+  /**
+   * Whether the controller is unloadable is returned through a callback.
+   * This gives the controller the opportunity to display a "Discard changes?" confirmation dialog.
+   */
+  public isUnloadable(callback: (unloadable: boolean) => void): void {
+    // This method is meant to be overridden.
+    callback(true);
   }
 
-  public handlers = {};
+  /**
+   * Performs any cleanup or finalization that must be performed before the page is torn down.
+   */
+  public unload(): void {
+    this.loaded = false;
+  }
+
+  public render(container: HTMLElement, elementTree: HTMLElement): void {
+    container.innerHTML = "";
+    container.insertAdjacentElement("afterbegin", elementTree);
+  }
+}
+
+export interface ControllerClass {
+  new (app: App): Controller;
+}
+
+export class PageNotFoundController extends Controller {
+  // @ts-ignore
+  public load(params: QueryParams): void {
+    App.getInstance().getAppBody().innerHTML = '<div class="page-not-found">Page not found</div>';
+  }
 }

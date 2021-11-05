@@ -1,6 +1,7 @@
+import classnames from "classnames";
+
 export interface IView<T> {
-  handlers: { [key: string]: (...args: any[]) => void };
-  attachHandler(handlers: { [key: string]: (...args: any[]) => void }): void;
-  render(data: T): void;
-  clear(): void;
+  container: HTMLElement;
+  cx: typeof classnames;
+  render(data: T): HTMLElement;
 }
