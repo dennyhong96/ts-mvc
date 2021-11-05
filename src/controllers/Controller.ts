@@ -8,9 +8,9 @@ export class Controller<S, V extends View<S>> implements IController {
   @inject() public backupDataService!: IBackupDataService;
 
   constructor(public model: Model<S> = new Model<any>({}), public view: V) {
-    view.render(model.state);
-    model.registerSubscriber(view.render);
-    view.attachHandler(this.handler);
+    view.mountElement(model.state);
+    model.registerSubscriber(view.mountElement);
+    view.attachHandler(this.handlers);
     this.saveBackup();
   }
 
@@ -22,16 +22,5 @@ export class Controller<S, V extends View<S>> implements IController {
     this.backupDataService.restore(this, this.model.state, this.model.setState);
   }
 
-  public handler(container: HTMLElement): void {
-    for (const key in container) {
-      if (/^on/.test(key)) {
-        const eventType = key.substr(2);
-        switch (eventType) {
-          default: {
-            break;
-          }
-        }
-      }
-    }
-  }
+  public handlers = {};
 }

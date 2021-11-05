@@ -4,5 +4,5 @@ import { IView } from "../views/IView";
 export interface IController {
   model: IModel<any>;
   view: IView<any>;
-  handler(container: HTMLElement): void;
+  handlers: { [key: string]: (container: HTMLElement) => void };
 }

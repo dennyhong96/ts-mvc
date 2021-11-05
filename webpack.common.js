@@ -1,5 +1,5 @@
 const path = require("path");
-// const { ProvidePlugin } = require("webpack");
+const { ProvidePlugin } = require("webpack");
 const { merge } = require("webpack-merge");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ESLintPlugin = require("eslint-webpack-plugin");
@@ -89,6 +89,11 @@ module.exports = (env) => {
         }),
 
         new ESLintPlugin(),
+
+        // Automatically load modules instead of having to import or require them everywhere.
+        new ProvidePlugin({
+          h: "hyperscript",
+        }),
       ],
     },
     environmentConfig,

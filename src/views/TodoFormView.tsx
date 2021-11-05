@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ITodoState } from "@/types/interfaces/ITodoState";
 import { ITodoFormView } from "@/types/interfaces/views/ITodoFormView";
 import { View } from "@/views/View";
@@ -19,13 +20,12 @@ export class TodoFormView extends View<ITodoState> implements ITodoFormView<ITod
     this.inputEl.value = "";
   }
 
-  public generateMarkup(): string {
-    return `
-    <form>
-    <input type="text" />
-    <button>Submit</button>
-    </form>
-    <ul>
-    `;
+  public render(): HTMLElement {
+    return (
+      <form>
+        <input type="text" />
+        <button>Submit</button>
+      </form>
+    );
   }
 }

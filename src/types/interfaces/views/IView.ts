@@ -1,6 +1,6 @@
 export interface IView<T> {
-  attachHandler(handler: (container: HTMLElement) => void): void;
+  handlers: { [key: string]: (...args: any[]) => void };
+  attachHandler(handlers: { [key: string]: (...args: any[]) => void }): void;
   render(data: T): void;
   clear(): void;
-  generateMarkup(_data: T): string;
 }
