@@ -1,7 +1,7 @@
 import { injectable } from "inversify-props";
 
-import { IChat } from "@/models/ChatsModel";
 import { View } from "@/views/View";
+import { IChat } from "@/types/interfaces/services/IChat";
 
 @injectable()
 export class ChatsView extends View {
@@ -21,7 +21,7 @@ export class ChatsView extends View {
 
     return (
       <div>
-        <ul>
+        <ul style="height:300px;overflow-y:auto;">
           {chats.map((c) => {
             return (
               <li data-chat-id={c.id}>

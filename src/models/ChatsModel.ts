@@ -1,21 +1,10 @@
 import { Model } from "@/models/Model";
 import { IModel } from "@/types/interfaces/models/IModel";
+import { IChat } from "@/types/interfaces/services/IChat";
+import { IChatsState } from "@/types/interfaces/services/IChatState";
 import { Utils } from "@/utils/Utils";
 import { inject, injectable } from "inversify-props";
 import { AuthModel } from "./AuthModel";
-
-export interface IChat {
-  id: string;
-  userId: string;
-  username: string;
-  message: string;
-  chatroomId: string;
-  createdOn: string;
-}
-
-interface IChatsState {
-  chats: IChat[];
-}
 
 export const initialChatsState: IChatsState = {
   chats: [],

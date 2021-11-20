@@ -17,7 +17,7 @@ export class ChatroomsController extends ControllerBase {
   // @ts-ignore
   protected async loadPage(params: QueryParams): Promise<void> {
     this.renderPage();
-    this.pubsub.subscribe(this.renderPage.bind(this));
+    this.pubsub.subscribe(ChatroomsModel.name, this.renderPage.bind(this));
     await this.loadChatrooms();
   }
 
@@ -33,7 +33,7 @@ export class ChatroomsController extends ControllerBase {
 
   public async loadChatrooms(): Promise<void> {
     await this.chatroomsModel.loadChatrooms();
-    this.pubsub.publish();
+    this.pubsub.publish(ChatroomsModel.name);
   }
 
   public joinChatroom(chatroomId: string): void {

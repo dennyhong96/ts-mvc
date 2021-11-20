@@ -1,8 +1,6 @@
 import { container } from "inversify-props";
 import { BackupDataService } from "@/services/BackupDataService";
-import { TodosRepository } from "@/services/repositories/TodosRepository";
 import { IBackupDataService } from "@/types/interfaces/services/IBackupDataService";
-import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodosRepository";
 import { BaseView } from "@/views/BaseView";
 import { HomeView } from "@/views/HomeView";
 import { View } from "@/views/View";
@@ -29,13 +27,10 @@ export class DIContainerHelper {
     container.addSingleton<HomeView>(HomeView);
     container.addSingleton<ChatroomsView>(ChatroomsView);
     container.addSingleton<ChatsView>(ChatsView);
-
     container.addSingleton<ModalView>(ModalView);
     container.addSingleton<ConfirmationModalView>(ConfirmationModalView);
 
-    container.addSingleton<ITodosRepository>(TodosRepository);
-
-    container.addTransient<IPubSubService>(PubSubService);
+    container.addSingleton<IPubSubService>(PubSubService);
     container.addSingleton<IBackupDataService>(BackupDataService);
   }
 }

@@ -1,18 +1,20 @@
 import { IPubSubService } from "@/types/interfaces/services/IPubSubService";
 
 export class PubSubService implements IPubSubService {
-  public subscribers: Set<() => void> = new Set();
+  public subscribersMap: Map<string, Set<() => void>> = new Map<string, Set<() => void>>();
 
-  public subscribe(fn: () => void): void {
-    this.subscribers.add(fn);
-    console.log("subscribe", this.subscribers);
+  public subscribe(key: string, fn: () => void): void {
+    if (!this.subscribersMap.get(key)) {
+      this.subscribersMap.set(key, new Set<() => void>());
+    }
+    this.subscribersMap.get(key)!.add(fn);
   }
 
-  public publish(): void {
-    this.subscribers.forEach((subscriber) => subscriber());
+  public publish(key: string): void {
+    this.subscribersMap.get(key)?.forEach((subscriber) => subscriber());
   }
 
-  public clean(): void {
-    this.subscribers.clear();
+  public clean(key: string): void {
+    this.subscribersMap.get(key)?.clear();
   }
 }

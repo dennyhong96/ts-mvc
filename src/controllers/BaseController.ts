@@ -1,6 +1,7 @@
 import { AuthModel } from "@/models/AuthModel";
 import { QueryParams } from "@/router/router";
-import { PubSubService } from "@/services/PubSubService";
+// import { PubSubService } from "@/services/PubSubService";
+import { IPubSubService } from "@/types/interfaces/services/IPubSubService";
 import { BaseView } from "@/views/BaseView";
 import { inject } from "inversify-props";
 import { MyApp } from "..";
@@ -13,9 +14,11 @@ import { Controller } from "./Controller";
 export class ControllerBase extends Controller {
   @inject() baseView!: BaseView;
   @inject() authModel!: AuthModel;
+  @inject() pubSubService!: IPubSubService;
+  public pubsub = this.pubSubService;
 
-  public pubsub = new PubSubService();
-  public params: QueryParams = {};
+  // public pubsub = new PubSubService();
+  public routeParams: QueryParams = {};
 
   // private masterPage: MasterPage;
   protected pageContainer!: HTMLElement;
@@ -27,9 +30,9 @@ export class ControllerBase extends Controller {
   public load(params: QueryParams): void {
     console.log("load called");
     super.load(params);
-    this.params = params;
+    this.routeParams = params;
     this.renderBase();
-    this.pubsub.subscribe(this.renderBase.bind(this));
+    this.pubsub.subscribe(AuthModel.name, this.renderBase.bind(this));
     this.loadPage(params);
   }
 
@@ -47,13 +50,13 @@ export class ControllerBase extends Controller {
 
   public login(username: string): void {
     this.authModel.login(username);
-    this.pubsub.publish();
+    this.pubsub.publish(AuthModel.name);
     this.app.getRouter().navigate("/chats");
   }
 
   public logout(): void {
     this.authModel.logout();
-    this.pubsub.publish();
+    this.pubsub.publish(AuthModel.name);
     this.app.getRouter().navigate("/");
   }
 

@@ -1,5 +1,5 @@
 export interface IPubSubService {
-  subscribe(fn: () => void): void;
-  publish(): void;
-  clean(): void;
+  subscribe(key: string, fn: () => void): void;
+  publish(key: string): void;
+  clean(key: string): void;
 }

@@ -17,7 +17,7 @@ export class ChatsController extends ControllerBase {
   // @ts-ignore
   protected async loadPage(params: QueryParams): Promise<void> {
     this.renderPage();
-    this.pubsub.subscribe(this.renderPage.bind(this));
+    this.pubsub.subscribe(ChatsModel.name, this.renderPage.bind(this));
     await this.loadChats();
   }
 
@@ -33,14 +33,14 @@ export class ChatsController extends ControllerBase {
 
   public async loadChats(): Promise<void> {
     await this.chatsModel.loadChats();
-    this.pubsub.publish();
+    this.pubsub.publish(ChatsModel.name);
   }
 
   public async postChatsMesssage(message: string): Promise<void> {
     await this.chatsModel.postChatsMesssage({
       message,
-      chatroomId: this.params.chatroomId,
+      chatroomId: this.routeParams.chatroomId,
     });
-    this.pubsub.publish();
+    this.pubsub.publish(ChatsModel.name);
   }
 }
