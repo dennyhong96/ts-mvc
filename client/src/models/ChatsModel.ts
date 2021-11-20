@@ -1,11 +1,12 @@
-import axios from "axios";
+import { inject, injectable } from "inversify-props";
+
 import { Model } from "@/models/Model";
+import { AuthModel } from "@/models/AuthModel";
+import { Utils } from "@/utils/Utils";
 import { IModel } from "@/types/interfaces/models/IModel";
 import { IChat } from "@/types/interfaces/IChat";
 import { IChatsState } from "@/types/interfaces/IChatState";
-import { Utils } from "@/utils/Utils";
-import { inject, injectable } from "inversify-props";
-import { AuthModel } from "@/models/AuthModel";
+import { IChatsRepository } from "@/types/interfaces/services/repositories/IChatsRepository";
 
 export const initialChatsState: IChatsState = {
   chats: [],
@@ -14,6 +15,7 @@ export const initialChatsState: IChatsState = {
 @injectable()
 export class ChatsModel extends Model<IChatsState> implements IModel<IChatsState> {
   @inject() private authModel!: AuthModel;
+  @inject() private chatsRepository!: IChatsRepository;
 
   constructor() {
     super({ ...initialChatsState });
@@ -28,43 +30,11 @@ export class ChatsModel extends Model<IChatsState> implements IModel<IChatsState
       username: this.authModel.state.username,
       createdOn: new Date().toISOString(),
     };
-    await axios.post(`${process.env.API_URL}/chats`, newChat);
-    // this.state.chats.push(newChat);
+    await this.chatsRepository.post(newChat);
   }
 
   async loadChats(chatroomId: string): Promise<void> {
-    const { data } = await axios.get(`${process.env.API_URL}/chats/${chatroomId}`);
-    this.state.chats = data as IChat[];
-
-    // this.state.chats = [
-    //   {
-    //     id: Utils.generateId("c"),
-    //     userId: Utils.generateId("u"),
-    //     username: "Denny",
-    //     chatroomId: `cr-1`,
-    //     message: "Hello, this is a chat message.",
-    //     createdOn: new Date().toISOString(),
-    //   },
-    //   {
-    //     id: Utils.generateId("c"),
-    //     userId: Utils.generateId("u"),
-    //     username: "Denny",
-    //     chatroomId: `cr-1`,
-    //     message: "Hello, this is a chat message.",
-    //     createdOn: new Date().toISOString(),
-    //   },
-    //   {
-    //     id: Utils.generateId("c"),
-    //     userId: Utils.generateId("u"),
-    //     username: "Denny",
-    //     chatroomId: `cr-1`,
-    //     message: "Hello, this is a chat message.",
-    //     createdOn: new Date().toISOString(),
-    //   },
-    // ];
-  }
-
-  setChats(chats: IChat[]): void {
+    const chats = await this.chatsRepository.get(chatroomId);
     this.state.chats = chats;
   }
 }

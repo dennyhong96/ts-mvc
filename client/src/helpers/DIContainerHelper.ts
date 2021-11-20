@@ -16,7 +16,11 @@ import { ChatsView } from "@/views/ChatsView";
 import { ChatsFormView } from "@/views/ChatsFormView";
 import { ChatsListView } from "@/views/ChatsListView";
 import { ISSEService } from "@/types/interfaces/services/ISSEService";
+import { IChatsRepository } from "@/types/interfaces/services/repositories/IChatsRepository";
+import { IChatroomsRepository } from "@/types/interfaces/services/repositories/IChatroomsRepository";
 import { SSEService } from "@/services/SSEService";
+import { ChatsRepository } from "@/services/repositories/ChatsRepository";
+import { ChatroomsRepository } from "@/services/repositories/ChatroomsRepository";
 
 export class DIContainerHelper {
   public static buildDIContainer(): void {
@@ -40,5 +44,9 @@ export class DIContainerHelper {
     container.addSingleton<ISSEService>(SSEService);
     container.addSingleton<IPubSubService>(PubSubService);
     container.addSingleton<IBackupDataService>(BackupDataService);
+
+    // Repositories
+    container.addSingleton<IChatsRepository>(ChatsRepository);
+    container.addSingleton<IChatroomsRepository>(ChatroomsRepository);
   }
 }

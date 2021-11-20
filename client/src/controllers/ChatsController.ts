@@ -22,6 +22,7 @@ export class ChatsController extends ControllerBase {
   }
 
   protected async loadPage(_params: QueryParams): Promise<void> {
+    // Route guard
     if (!this.authModel.state.userId) {
       this.app.getRouter().navigate("/");
       return;
@@ -30,12 +31,8 @@ export class ChatsController extends ControllerBase {
     this.pubsub.subscribe(ChatsModel.name, this.renderChatsList);
     this.SSEService.registerEventsource(
       `${process.env.API_URL}/chats/sse/${this.routeParams.chatroomId}`,
-      async () => {
-        await this.chatsModel.loadChats(this.routeParams.chatroomId);
-        this.pubsub.publish(ChatsModel.name);
-      },
+      this.loadChats,
     );
-    // await this.loadChats();
   }
 
   public unload(): void {
@@ -74,10 +71,10 @@ export class ChatsController extends ControllerBase {
     );
   }
 
-  public async loadChats(): Promise<void> {
+  public loadChats = (async () => {
     await this.chatsModel.loadChats(this.routeParams.chatroomId);
-    // this.pubsub.publish(ChatsModel.name);
-  }
+    this.pubsub.publish(ChatsModel.name);
+  }).bind(this);
 
   public async postChatsMesssage(message: string): Promise<void> {
     await this.chatsModel.postChatsMesssage({

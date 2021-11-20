@@ -24,11 +24,7 @@ export class ChatroomsController extends ControllerBase {
     }
     this.renderPage();
     this.pubsub.subscribe(ChatroomsModel.name, this.renderPage);
-    this.SSEService.registerEventsource(`${process.env.API_URL}/chatrooms/sse`, async () => {
-      await this.chatroomsModel.loadChatrooms();
-      this.pubsub.publish(ChatroomsModel.name);
-    });
-    // await this.loadChatrooms();
+    this.SSEService.registerEventsource(`${process.env.API_URL}/chatrooms/sse`, this.loadChatrooms);
   }
 
   public unload(): void {
@@ -47,10 +43,10 @@ export class ChatroomsController extends ControllerBase {
     );
   }).bind(this);
 
-  public async loadChatrooms(): Promise<void> {
+  public loadChatrooms = (async () => {
     await this.chatroomsModel.loadChatrooms();
     this.pubsub.publish(ChatroomsModel.name);
-  }
+  }).bind(this);
 
   public async joinChatroom(chatroomId: string): Promise<void> {
     await this.chatroomsModel.enterChatroom(chatroomId);
