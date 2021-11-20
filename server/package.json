@@ -1,5 +1,5 @@
 {
-  "name": "node-ts",
+  "name": "sse-demo-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

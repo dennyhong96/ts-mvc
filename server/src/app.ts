@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+import path from "path";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 
@@ -10,7 +12,6 @@ interface IChatroom {
   name: string;
   onlineCount: number;
 }
-
 interface IChat {
   id: string;
   userId: string;
@@ -19,35 +20,40 @@ interface IChat {
   chatroomId: string;
   createdOn: string;
 }
+interface Versions {
+  CHAT_ROOM: string;
+  CHATS: Record<string, string>;
+}
+type Chatrooms = Record<string, IChatroom>;
+type Chats = Record<string, IChat[]>;
+interface DB {
+  versions: Versions;
+  chatrooms: Chatrooms;
+  chats: Chats;
+}
+
+const SSE_INTERVAL = 100;
 
 const generateId = () => "_" + Math.random().toString(36).substr(2, 9);
 
-let versions: {
-  CHAT_ROOM: string;
-  CHATS: Record<string, string>;
-} = {
-  CHAT_ROOM: generateId(),
-  CHATS: {
-    "cr-1": generateId(),
-    "cr-2": generateId(),
-    "cr-3": generateId(),
-  },
+const dbGet = async () => {
+  const file = await fs.readFile(path.join(__dirname, "..", "_db.json"), {
+    encoding: "utf-8",
+  });
+  const db: DB = JSON.parse(file);
+  return db;
 };
 
-const chatrooms: Record<string, IChatroom> = {
-  "cr-1": { id: "cr-1", name: "Chatroom 1", onlineCount: 0 },
-  "cr-2": { id: "cr-2", name: "Chatroom 2", onlineCount: 0 },
-  "cr-3": { id: "cr-3", name: "Chatroom 3", onlineCount: 0 },
-};
-
-const chats: Record<string, IChat[]> = {
-  "cr-1": [],
-  "cr-2": [],
-  "cr-3": [],
+const dbPut = async (db: DB) => {
+  await fs.writeFile(
+    path.join(__dirname, "..", "_db.json"),
+    JSON.stringify(db)
+  );
+  return dbGet();
 };
 
 app.get("/chats/sse/:chatroomId", (req, res) => {
-  let localChatVersion: Record<string, string> = {
+  let localChatVersion: Versions["CHATS"] = {
     "cr-1": generateId(),
     "cr-2": generateId(),
     "cr-3": generateId(),
@@ -56,14 +62,14 @@ app.get("/chats/sse/:chatroomId", (req, res) => {
   res.set("Content-Type", "text/event-stream");
   res.set("Connection", "keep-alive");
   res.set("Cache-Control", "no-cache");
-  res.set("Access-Control-Allow-Origin", "*");
-  console.log("Client connected to chats sse");
-  setInterval(function () {
-    if (localChatVersion[chatroomId] !== versions["CHATS"][chatroomId]) {
+  console.log(`Client connected to chats sse - /chats/sse/${chatroomId}`);
+  setInterval(async function () {
+    const db = await dbGet();
+    if (localChatVersion[chatroomId] !== db.versions["CHATS"][chatroomId]) {
       res.status(200).write(`data: UPDATE\n\n`);
-      localChatVersion[chatroomId] = versions["CHATS"][chatroomId];
+      localChatVersion[chatroomId] = db.versions["CHATS"][chatroomId];
     }
-  }, 250);
+  }, SSE_INTERVAL);
 });
 
 app.get("/chatrooms/sse", (req, res) => {
@@ -71,36 +77,42 @@ app.get("/chatrooms/sse", (req, res) => {
   res.set("Content-Type", "text/event-stream");
   res.set("Connection", "keep-alive");
   res.set("Cache-Control", "no-cache");
-  res.set("Access-Control-Allow-Origin", "*");
-  console.log("Client connected to chats sse");
-  setInterval(function () {
-    if (localChatVersion !== versions["CHAT_ROOM"]) {
+  console.log(`Client connected to chats sse - /chatrooms/sse`);
+  setInterval(async function () {
+    const db = await dbGet();
+    if (localChatVersion !== db.versions["CHAT_ROOM"]) {
       res.status(200).write(`data: UPDATE\n\n`);
-      localChatVersion = versions["CHAT_ROOM"];
+      localChatVersion = db.versions["CHAT_ROOM"];
     }
-  }, 250);
+  }, SSE_INTERVAL);
 });
 
-app.post("/chatrooms/:chatroomId", (req, res) => {
+app.post("/chatrooms/:chatroomId", async (req, res) => {
   const chatroomId = req.params.chatroomId;
-  chatrooms[chatroomId].onlineCount++;
-  versions["CHAT_ROOM"] = generateId();
-  res.status(200).json(Object.values(chatrooms));
+  const db = await dbGet();
+  db.chatrooms[chatroomId].onlineCount++;
+  db.versions["CHAT_ROOM"] = generateId();
+  const updatedDB = await dbPut(db);
+  res.status(200).json(Object.values(updatedDB.chatrooms));
 });
 
-app.get("/chatrooms", (req, res) => {
-  res.status(200).json(Object.values(chatrooms));
+app.get("/chatrooms", async (req, res) => {
+  const db = await dbGet();
+  res.status(200).json(Object.values(db.chatrooms));
 });
 
-app.get("/chats/:chatroomId", (req, res) => {
+app.get("/chats/:chatroomId", async (req, res) => {
   const chatroomId = req.params.chatroomId;
-  res.status(200).json(chats[chatroomId]);
+  const db = await dbGet();
+  res.status(200).json(db.chats[chatroomId]);
 });
 
-app.post("/chats", (req, res) => {
+app.post("/chats", async (req, res) => {
   const chat: IChat = req.body;
-  chats[chat.chatroomId].push(chat);
-  versions["CHATS"][chat.chatroomId] = generateId();
+  const db = await dbGet();
+  db.chats[chat.chatroomId].push(chat);
+  db.versions["CHATS"][chat.chatroomId] = generateId();
+  await dbPut(db);
   res.status(200).json(chat);
 });
 
