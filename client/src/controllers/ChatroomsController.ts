@@ -12,6 +12,8 @@ export class ChatroomsController extends ControllerBase {
     super(app);
 
     this.chatroomsView.registerContainer(this.pageContainer);
+
+    this.test();
   }
 
   // @ts-ignore
@@ -36,7 +38,19 @@ export class ChatroomsController extends ControllerBase {
     this.pubsub.publish(ChatroomsModel.name);
   }
 
-  public joinChatroom(chatroomId: string): void {
+  public async joinChatroom(chatroomId: string): Promise<void> {
+    await this.chatroomsModel.enterChatroom(chatroomId);
     this.app.navigate(`/chats/${chatroomId}`);
+  }
+
+  test(): void {
+    const eventSource = new EventSource("http://localhost:8000/chatrooms/sse");
+    eventSource.addEventListener("message", async (evt) => {
+      console.log(evt.data);
+      // this.chatsModel.setChats(JSON.parse(evt.data));
+      // this.pubsub.publish(ChatsModel.name);
+      await this.chatroomsModel.loadChatrooms();
+      this.pubsub.publish(ChatroomsModel.name);
+    });
   }
 }

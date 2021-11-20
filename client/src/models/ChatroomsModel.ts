@@ -1,7 +1,8 @@
 import { Model } from "@/models/Model";
 import { IModel } from "@/types/interfaces/models/IModel";
+import { IChatroom } from "@/types/interfaces/services/IChatroom";
 import { IChatroomsState } from "@/types/interfaces/services/IChatroomState";
-import { Utils } from "@/utils/Utils";
+import axios from "axios";
 import { injectable } from "inversify-props";
 
 export const initialChatroomState: IChatroomsState = {
@@ -18,18 +19,23 @@ export class ChatroomsModel extends Model<IChatroomsState> implements IModel<ICh
   }
 
   async loadChatrooms(): Promise<void> {
-    await Utils.sleep();
-    this.state.chatrooms = [
-      {
-        id: `cr-1`,
-        name: "Chatroom 1",
-        onlineCount: 0,
-      },
-      {
-        id: `cr-2`,
-        name: "Chatroom 2",
-        onlineCount: 0,
-      },
-    ];
+    const { data } = await axios.get(`http://localhost:8000/chatrooms`);
+    this.state.chatrooms = data as IChatroom[];
+    // this.state.chatrooms = [
+    //   {
+    //     id: `cr-1`,
+    //     name: "Chatroom 1",
+    //     onlineCount: 0,
+    //   },
+    //   {
+    //     id: `cr-2`,
+    //     name: "Chatroom 2",
+    //     onlineCount: 0,
+    //   },
+    // ];
+  }
+
+  async enterChatroom(chatroomId: string): Promise<void> {
+    await axios.post(`http://localhost:8000/chatrooms/${chatroomId}`);
   }
 }

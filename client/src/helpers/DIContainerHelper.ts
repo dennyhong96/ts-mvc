@@ -13,6 +13,8 @@ import { ChatroomsView } from "@/views/ChatroomsView";
 import { ChatroomsModel } from "@/models/ChatroomsModel";
 import { ChatsModel } from "@/models/ChatsModel";
 import { ChatsView } from "@/views/ChatsView";
+import { ChatsFormView } from "@/views/ChatsFormView";
+import { ChatsListView } from "@/views/ChatsListView";
 
 export class DIContainerHelper {
   public static buildDIContainer(): void {
@@ -27,6 +29,8 @@ export class DIContainerHelper {
     container.addSingleton<HomeView>(HomeView);
     container.addSingleton<ChatroomsView>(ChatroomsView);
     container.addSingleton<ChatsView>(ChatsView);
+    container.addSingleton<ChatsListView>(ChatsListView);
+    container.addSingleton<ChatsFormView>(ChatsFormView);
     container.addSingleton<ModalView>(ModalView);
     container.addSingleton<ConfirmationModalView>(ConfirmationModalView);
 
