@@ -7,6 +7,7 @@ import { injectable } from "inversify-props";
 
 export const initialTodoState: ITodoState = {
   todos: [],
+  showModal: true,
 };
 
 @injectable()
@@ -38,5 +39,13 @@ export class TodoModel extends Model<ITodoState> implements IModel<ITodoState> {
   public findTodo(todoId: string): ITodo | undefined {
     const todo = this.state.todos.find((td) => td.id === todoId);
     return todo;
+  }
+
+  public openModal() {
+    this.state.showModal = true;
+  }
+
+  public closeModal() {
+    this.state.showModal = false;
   }
 }

@@ -1,11 +1,10 @@
 import "reflect-metadata";
 
-import { DIContainerHelper } from "@/helpers/DIContainerHelper";
 import { App } from "./app/app";
 import { ControllerHome } from "./controllers/controllerHome";
 import { ControllerAbout } from "./controllers/controllerAbout";
 import { ControllerTodo } from "./controllers/controllerTodo";
-
+import { DIContainerHelper } from "@/helpers/DIContainerHelper";
 DIContainerHelper.buildDIContainer();
 
 export class MyApp extends App {
@@ -26,5 +25,4 @@ export class MyApp extends App {
 function main() {
   new MyApp(document.getElementById("#root")!);
 }
-
 window.addEventListener("load", main);

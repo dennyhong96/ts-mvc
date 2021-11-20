@@ -5,17 +5,20 @@ import { ITodosRepository } from "@/types/interfaces/services/repositories/ITodo
 import { TodoModel } from "@/models/TodoModel";
 import { ViewHome } from "@/views/viewHome";
 import { MyApp } from "..";
+import { ConfirmationModalView } from "@/views/ConfirmationModalView";
 
 export class ControllerHome extends ControllerBase {
+  @inject("ViewHome") private homeView!: ViewHome;
+  @inject() private confirmationModalView!: ConfirmationModalView;
+
   @inject() private todosRepository!: ITodosRepository;
   @inject() private todoModel!: TodoModel;
-
-  homeView: ViewHome;
 
   constructor(public app: MyApp) {
     super(app);
 
-    this.homeView = new ViewHome(this.pageContainer);
+    console.log(this.homeView);
+    this.homeView.registerContainer(this.pageContainer);
   }
 
   // @ts-ignore
@@ -34,8 +37,26 @@ export class ControllerHome extends ControllerBase {
         data: this.todoModel.state,
         onDeleteTodo: this.deleteTodo.bind(this),
         onToggleTodo: this.toggleTodo.bind(this),
+        onOpenModal: this.openModal.bind(this),
       }),
     );
+    this.render(
+      this.pageContainer.querySelector(".modal-container")!,
+      this.confirmationModalView.render({
+        show: this.todoModel.state.showModal,
+        closeModal: this.closeModal.bind(this),
+      }),
+    );
+  }
+
+  openModal(): void {
+    this.todoModel.openModal();
+    this.renderPage();
+  }
+
+  closeModal(): void {
+    this.todoModel.closeModal();
+    this.renderPage();
   }
 
   deleteTodo(todoId: string): void {

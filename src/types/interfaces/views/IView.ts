@@ -1,7 +1,7 @@
 import classnames from "classnames";
 
-export interface IView<T> {
-  container: HTMLElement;
+export interface IView {
+  container: HTMLElement | null;
   cx: typeof classnames;
-  render(data: T): HTMLElement;
+  render(_props: any): HTMLElement;
 }

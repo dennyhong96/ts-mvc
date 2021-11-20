@@ -1,11 +1,17 @@
 import h from "hyperscript";
 import classnames from "classnames";
 import { IView } from "@/types/interfaces/views/IView";
+import { injectable } from "inversify-props";
 
-export class View<T> implements IView<T> {
-  constructor(public container: HTMLElement) {}
+@injectable()
+export class View implements IView {
+  public container: HTMLElement | null = null;
+  public registerContainer(container: HTMLElement): void {
+    this.container = container;
+  }
   public cx = classnames;
-  public render(_data: T): HTMLElement {
-    return h("div");
+  public render(_props: any): HTMLElement {
+    // Overwrite
+    return <div />;
   }
 }

@@ -1,6 +1,6 @@
 import { IView } from "./IView";
 
-export interface ITodoView<T> extends IView<T> {
+export interface ITodoView extends IView {
   handlers: {
     handleToggleTodo: (todoId: string) => void;
   };

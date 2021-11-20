@@ -1,6 +1,6 @@
 import { IView } from "./IView";
 
-export interface ITodoFormView<T> extends IView<T> {
+export interface ITodoFormView extends IView {
   focusInput(): void;
   clearInput(): void;
 }

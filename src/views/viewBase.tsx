@@ -1,10 +1,8 @@
 import { View } from "@/views/View";
+import { injectable } from "inversify-props";
 
-export class ViewBase extends View<any> {
-  constructor(public container: HTMLElement) {
-    super(container);
-  }
-
+@injectable()
+export class ViewBase extends View {
   public render(): HTMLElement {
     return (
       <div className="page">

@@ -7,15 +7,16 @@ import { ViewTodo } from "@/views/viewTodo";
 import { ITodo } from "@/types/interfaces/ITodo";
 
 export class ControllerTodo extends ControllerBase {
+  @inject("ViewTodo") private todoView!: ViewTodo;
   @inject() private todoModel!: TodoModel;
 
-  todoView: ViewTodo;
   params: QueryParams = {};
   todo: ITodo | undefined;
 
   constructor(public app: MyApp) {
     super(app);
-    this.todoView = new ViewTodo(this.pageContainer);
+
+    this.todoView.registerContainer(this.pageContainer);
   }
 
   // @ts-ignore

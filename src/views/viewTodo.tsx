@@ -1,11 +1,9 @@
 import { ITodo } from "@/types/interfaces/ITodo";
 import { View } from "@/views/View";
+import { injectable } from "inversify-props";
 
-export class ViewTodo extends View<any> {
-  constructor(public container: HTMLElement) {
-    super(container);
-  }
-
+@injectable()
+export class ViewTodo extends View {
   public render(props: {
     data: {
       todo: ITodo;
