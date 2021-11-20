@@ -1,5 +1,5 @@
 {
-  "name": "ts-mvc",
+  "name": "sse-demo-client",
   "version": "1.0.0",
   "description": "TypeScript MVC pattern SPA with dependency injection",
   "main": "index.js",
