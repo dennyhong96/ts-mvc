@@ -1,10 +1,10 @@
-import { AuthModel } from "@/models/AuthModel";
-import { QueryParams } from "@/router/router";
-import { IPubSubService } from "@/types/interfaces/services/IPubSubService";
-import { BaseView } from "@/views/BaseView";
 import { inject } from "inversify-props";
 import { MyApp } from "..";
-import { Controller } from "./Controller";
+import { QueryParams } from "@/router/router";
+import { AuthModel } from "@/models/AuthModel";
+import { Controller } from "@/controllers/Controller";
+import { IPubSubService } from "@/types/interfaces/services/IPubSubService";
+import { BaseView } from "@/views/BaseView";
 
 /**
  * This is the viewBase class for all controllers in this app.

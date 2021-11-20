@@ -1,7 +1,7 @@
 import { injectable } from "inversify-props";
 
 import { View } from "@/views/View";
-import { IChat } from "@/types/interfaces/services/IChat";
+import { IChat } from "@/types/interfaces/IChat";
 
 @injectable()
 export class ChatsListView extends View {

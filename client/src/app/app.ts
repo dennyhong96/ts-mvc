@@ -1,4 +1,4 @@
-import { Router, QueryParams } from "../router/router";
+import { Router, QueryParams } from "@/router/router";
 
 /**
  * This is the root object of the application.

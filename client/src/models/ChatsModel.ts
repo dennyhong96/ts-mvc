@@ -1,11 +1,11 @@
+import axios from "axios";
 import { Model } from "@/models/Model";
 import { IModel } from "@/types/interfaces/models/IModel";
-import { IChat } from "@/types/interfaces/services/IChat";
-import { IChatsState } from "@/types/interfaces/services/IChatState";
+import { IChat } from "@/types/interfaces/IChat";
+import { IChatsState } from "@/types/interfaces/IChatState";
 import { Utils } from "@/utils/Utils";
-import axios from "axios";
 import { inject, injectable } from "inversify-props";
-import { AuthModel } from "./AuthModel";
+import { AuthModel } from "@/models/AuthModel";
 
 export const initialChatsState: IChatsState = {
   chats: [],

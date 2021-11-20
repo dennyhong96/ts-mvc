@@ -1,4 +1,4 @@
-import { IController } from "../controllers/IController";
+import { IController } from "@/types/interfaces/controllers/IController";
 
 export interface IBackupDataService {
   save<T extends Record<string, any>>(

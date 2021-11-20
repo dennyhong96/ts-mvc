@@ -1,5 +1,5 @@
 import { inject } from "inversify-props";
-import { ControllerBase } from "./BaseController";
+import { ControllerBase } from "@/controllers/BaseController";
 import { HomeView } from "@/views/HomeView";
 import { MyApp } from "..";
 import { QueryParams } from "@/router/router";

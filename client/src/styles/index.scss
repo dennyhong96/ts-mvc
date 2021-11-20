@@ -1,8 +1,8 @@
 /* Self-hosted Raleway Variable Font */
 @font-face {
   font-family: "Raleway";
-  src: url("../assets/fonts/raleway-variable-font.woff2") format("woff2 supports variations"),
-    url("../assets/fonts/raleway-variable-font.woff2") format("woff2-variations");
+  src: url("@/assets/fonts/raleway-variable-font.woff2") format("woff2 supports variations"),
+    url("@/assets/fonts/raleway-variable-font.woff2") format("woff2-variations");
   font-weight: 100 900;
   font-display: fallback;
 }

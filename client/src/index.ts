@@ -1,10 +1,12 @@
 import "reflect-metadata";
 
-import { App } from "./app/app";
+import { App } from "@/app/app";
 import { DIContainerHelper } from "@/helpers/DIContainerHelper";
-import { HomeController } from "./controllers/HomeController";
-import { ChatroomsController } from "./controllers/ChatroomsController";
-import { ChatsController } from "./controllers/ChatsController";
+import { HomeController } from "@/controllers/HomeController";
+import { ChatroomsController } from "@/controllers/ChatroomsController";
+import { ChatsController } from "@/controllers/ChatsController";
+
+import "@/styles/index.scss";
 
 DIContainerHelper.buildDIContainer();
 

@@ -1,5 +1,5 @@
 import { injectable } from "inversify-props";
-import { ModalView } from "./ModalView";
+import { ModalView } from "@/views/ModalView";
 
 @injectable()
 export class ConfirmationModalView extends ModalView {

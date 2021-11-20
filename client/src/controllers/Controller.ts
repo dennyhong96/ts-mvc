@@ -1,5 +1,5 @@
-import { QueryParams } from "../router/router";
-import { App } from "../app/app";
+import { QueryParams } from "@/router/router";
+import { App } from "@/app/app";
 
 /**
  * Each URL path in your app will have a corresponding controller, which should be a subclass of this class.
