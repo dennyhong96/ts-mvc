@@ -11,7 +11,6 @@ export class View implements IView {
   }
   public cx = classnames;
   public render(_props: any): HTMLElement {
-    // Overwrite
     return <div />;
   }
 }

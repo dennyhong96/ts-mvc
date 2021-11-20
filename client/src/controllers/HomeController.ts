@@ -9,12 +9,15 @@ export class HomeController extends ControllerBase {
   constructor(public app: MyApp) {
     super(app);
 
-    console.log(this.homeView);
     this.homeView.registerContainer(this.pageContainer);
   }
 
   // @ts-ignore
   protected async loadPage(params: QueryParams): Promise<void> {
+    if (this.authModel.state.userId) {
+      this.app.getRouter().navigate("/chats");
+      return;
+    }
     this.renderPage();
   }
 

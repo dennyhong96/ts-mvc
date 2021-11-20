@@ -1,16 +1,19 @@
 import { inject } from "inversify-props";
-import { ControllerBase } from "./BaseController";
 import { MyApp } from "..";
-import { ChatsView } from "@/views/ChatsView";
+import { QueryParams } from "@/router/router";
 import { ChatsModel } from "@/models/ChatsModel";
+import { ControllerBase } from "@/controllers/BaseController";
+import { ChatsView } from "@/views/ChatsView";
 import { ChatsFormView } from "@/views/ChatsFormView";
 import { ChatsListView } from "@/views/ChatsListView";
+import { ISSEService } from "@/types/interfaces/services/ISSEService";
 
 export class ChatsController extends ControllerBase {
   @inject() private chatsView!: ChatsView;
   @inject() private chatsFormView!: ChatsFormView;
   @inject() private chatsListView!: ChatsListView;
   @inject() private chatsModel!: ChatsModel;
+  @inject() private SSEService!: ISSEService;
 
   constructor(public app: MyApp) {
     super(app);
@@ -18,13 +21,29 @@ export class ChatsController extends ControllerBase {
     this.chatsView.registerContainer(this.pageContainer);
   }
 
-  // @ts-ignore
-  protected async loadPage(params: QueryParams): Promise<void> {
+  protected async loadPage(_params: QueryParams): Promise<void> {
+    if (!this.authModel.state.userId) {
+      this.app.getRouter().navigate("/");
+      return;
+    }
     this.renderPage();
-    this.pubsub.subscribe(ChatsModel.name, this.renderChatsList.bind(this));
+    this.pubsub.subscribe(ChatsModel.name, this.renderChatsList);
+    this.SSEService.registerEventsource(
+      `${process.env.API_URL}/chats/sse/${this.routeParams.chatroomId}`,
+      async () => {
+        await this.chatsModel.loadChats(this.routeParams.chatroomId);
+        this.pubsub.publish(ChatsModel.name);
+      },
+    );
     // await this.loadChats();
+  }
 
-    this.test();
+  public unload(): void {
+    this.pubsub.clean(ChatsModel.name, this.renderChatsList);
+    this.SSEService.closeEventSource(
+      `${process.env.API_URL}/chats/sse/${this.routeParams.chatroomId}`,
+    );
+    super.unload();
   }
 
   protected renderPage(): void {
@@ -33,20 +52,20 @@ export class ChatsController extends ControllerBase {
     this.renderForm();
   }
 
-  protected renderChats() {
+  protected renderChats(): void {
     this.render(this.pageContainer, this.chatsView.render());
   }
 
-  protected renderChatsList() {
+  protected renderChatsList = (() => {
     this.render(
       this.chatsView.listSlot,
       this.chatsListView.render({
         chats: this.chatsModel.state.chats,
       }),
     );
-  }
+  }).bind(this);
 
-  protected renderForm() {
+  protected renderForm(): void {
     this.render(
       this.chatsView.formSlot,
       this.chatsFormView.render({
@@ -57,7 +76,7 @@ export class ChatsController extends ControllerBase {
 
   public async loadChats(): Promise<void> {
     await this.chatsModel.loadChats(this.routeParams.chatroomId);
-    this.pubsub.publish(ChatsModel.name);
+    // this.pubsub.publish(ChatsModel.name);
   }
 
   public async postChatsMesssage(message: string): Promise<void> {
@@ -65,19 +84,6 @@ export class ChatsController extends ControllerBase {
       message,
       chatroomId: this.routeParams.chatroomId,
     });
-    this.pubsub.publish(ChatsModel.name);
-  }
-
-  test(): void {
-    const eventSource = new EventSource(
-      `http://localhost:8000/chats/sse/${this.routeParams.chatroomId}`,
-    );
-    eventSource.addEventListener("message", async (evt) => {
-      console.log(evt.data);
-      // this.chatsModel.setChats(JSON.parse(evt.data));
-      // this.pubsub.publish(ChatsModel.name);
-      await this.chatsModel.loadChats(this.routeParams.chatroomId);
-      this.pubsub.publish(ChatsModel.name);
-    });
+    // this.pubsub.publish(ChatsModel.name);
   }
 }

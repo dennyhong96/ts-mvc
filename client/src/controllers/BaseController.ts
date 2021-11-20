@@ -1,6 +1,5 @@
 import { AuthModel } from "@/models/AuthModel";
 import { QueryParams } from "@/router/router";
-// import { PubSubService } from "@/services/PubSubService";
 import { IPubSubService } from "@/types/interfaces/services/IPubSubService";
 import { BaseView } from "@/views/BaseView";
 import { inject } from "inversify-props";
@@ -28,15 +27,19 @@ export class ControllerBase extends Controller {
   }
 
   public load(params: QueryParams): void {
-    console.log("load called");
     super.load(params);
     this.routeParams = params;
     this.renderBase();
-    this.pubsub.subscribe(AuthModel.name, this.renderBase.bind(this));
+    this.pubsub.subscribe(AuthModel.name, this.renderBase);
     this.loadPage(params);
   }
 
-  public renderBase(): void {
+  public unload(): void {
+    this.pubsub.clean(AuthModel.name, this.renderBase);
+    super.unload();
+  }
+
+  public renderBase = (() => {
     const appRootElement = this.app.getAppBody();
     this.render(
       appRootElement,
@@ -46,7 +49,7 @@ export class ControllerBase extends Controller {
       }),
     );
     this.pageContainer = appRootElement.querySelector(".page-container") as HTMLElement;
-  }
+  }).bind(this);
 
   public login(username: string): void {
     this.authModel.login(username);

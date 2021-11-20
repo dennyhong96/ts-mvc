@@ -7,7 +7,6 @@ import { IChat } from "@/types/interfaces/services/IChat";
 export class ChatsListView extends View {
   public render(props: { chats: IChat[] }): HTMLElement {
     const { chats } = props;
-
     return (
       <div>
         <ul style="height:300px;overflow-y:auto;">

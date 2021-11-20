@@ -7,7 +7,6 @@ import closeIcon from "@/assets/icons/close.svg";
 @injectable()
 export class ModalView extends View {
   protected content: HTMLElement | null = null;
-
   public render(props: { show: boolean; closeModal: () => void }): HTMLElement {
     const { show, closeModal } = props;
     return show ? (

@@ -19,7 +19,7 @@ export class ChatroomsModel extends Model<IChatroomsState> implements IModel<ICh
   }
 
   async loadChatrooms(): Promise<void> {
-    const { data } = await axios.get(`http://localhost:8000/chatrooms`);
+    const { data } = await axios.get(`${process.env.API_URL}/chatrooms`);
     this.state.chatrooms = data as IChatroom[];
     // this.state.chatrooms = [
     //   {
@@ -36,6 +36,6 @@ export class ChatroomsModel extends Model<IChatroomsState> implements IModel<ICh
   }
 
   async enterChatroom(chatroomId: string): Promise<void> {
-    await axios.post(`http://localhost:8000/chatrooms/${chatroomId}`);
+    await axios.post(`${process.env.API_URL}/chatrooms/${chatroomId}`);
   }
 }

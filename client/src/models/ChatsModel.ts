@@ -31,12 +31,12 @@ export class ChatsModel extends Model<IChatsState> implements IModel<IChatsState
       username: this.authModel.state.username,
       createdOn: new Date().toISOString(),
     };
-    await axios.post("http://localhost:8000/chats", newChat);
+    await axios.post(`${process.env.API_URL}/chats`, newChat);
     // this.state.chats.push(newChat);
   }
 
   async loadChats(chatroomId: string): Promise<void> {
-    const { data } = await axios.get(`http://localhost:8000/chats/${chatroomId}`);
+    const { data } = await axios.get(`${process.env.API_URL}/chats/${chatroomId}`);
     this.state.chats = data as IChat[];
 
     // this.state.chats = [

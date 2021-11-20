@@ -1,29 +1,43 @@
 import { inject } from "inversify-props";
 import { ControllerBase } from "./BaseController";
 import { MyApp } from "..";
-import { ChatroomsView } from "@/views/ChatroomsView";
 import { ChatroomsModel } from "@/models/ChatroomsModel";
+import { ChatroomsView } from "@/views/ChatroomsView";
+import { ISSEService } from "@/types/interfaces/services/ISSEService";
 
 export class ChatroomsController extends ControllerBase {
   @inject() private chatroomsView!: ChatroomsView;
   @inject() private chatroomsModel!: ChatroomsModel;
+  @inject() private SSEService!: ISSEService;
 
   constructor(public app: MyApp) {
     super(app);
 
     this.chatroomsView.registerContainer(this.pageContainer);
-
-    this.test();
   }
 
   // @ts-ignore
   protected async loadPage(params: QueryParams): Promise<void> {
+    if (!this.authModel.state.userId) {
+      this.app.getRouter().navigate("/");
+      return;
+    }
     this.renderPage();
-    this.pubsub.subscribe(ChatroomsModel.name, this.renderPage.bind(this));
-    await this.loadChatrooms();
+    this.pubsub.subscribe(ChatroomsModel.name, this.renderPage);
+    this.SSEService.registerEventsource(`${process.env.API_URL}/chatrooms/sse`, async () => {
+      await this.chatroomsModel.loadChatrooms();
+      this.pubsub.publish(ChatroomsModel.name);
+    });
+    // await this.loadChatrooms();
   }
 
-  protected renderPage(): void {
+  public unload(): void {
+    this.pubsub.clean(ChatroomsModel.name, this.renderPage);
+    this.SSEService.closeEventSource(`${process.env.API_URL}/chatrooms/sse`);
+    super.unload();
+  }
+
+  protected renderPage = (() => {
     this.render(
       this.pageContainer,
       this.chatroomsView.render({
@@ -31,7 +45,7 @@ export class ChatroomsController extends ControllerBase {
         joinChatroom: this.joinChatroom.bind(this),
       }),
     );
-  }
+  }).bind(this);
 
   public async loadChatrooms(): Promise<void> {
     await this.chatroomsModel.loadChatrooms();
@@ -41,16 +55,5 @@ export class ChatroomsController extends ControllerBase {
   public async joinChatroom(chatroomId: string): Promise<void> {
     await this.chatroomsModel.enterChatroom(chatroomId);
     this.app.navigate(`/chats/${chatroomId}`);
-  }
-
-  test(): void {
-    const eventSource = new EventSource("http://localhost:8000/chatrooms/sse");
-    eventSource.addEventListener("message", async (evt) => {
-      console.log(evt.data);
-      // this.chatsModel.setChats(JSON.parse(evt.data));
-      // this.pubsub.publish(ChatsModel.name);
-      await this.chatroomsModel.loadChatrooms();
-      this.pubsub.publish(ChatroomsModel.name);
-    });
   }
 }

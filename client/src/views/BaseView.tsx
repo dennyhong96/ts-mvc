@@ -10,12 +10,7 @@ export class BaseView extends View {
         <div className="header"></div>
         <div className="leftnav">
           <div>{username}</div>
-          <div>
-            {/* <a className="appnav" href="/about">
-              About
-            </a> */}
-            {username && <button onclick={logout}>Logout</button>}
-          </div>
+          <div>{username && <button onclick={logout}>Logout</button>}</div>
         </div>
         <div className="page-container"></div>
       </div>

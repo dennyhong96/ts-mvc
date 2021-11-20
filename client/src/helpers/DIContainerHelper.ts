@@ -15,6 +15,8 @@ import { ChatsModel } from "@/models/ChatsModel";
 import { ChatsView } from "@/views/ChatsView";
 import { ChatsFormView } from "@/views/ChatsFormView";
 import { ChatsListView } from "@/views/ChatsListView";
+import { ISSEService } from "@/types/interfaces/services/ISSEService";
+import { SSEService } from "@/services/SSEService";
 
 export class DIContainerHelper {
   public static buildDIContainer(): void {
@@ -34,6 +36,8 @@ export class DIContainerHelper {
     container.addSingleton<ModalView>(ModalView);
     container.addSingleton<ConfirmationModalView>(ConfirmationModalView);
 
+    // Services
+    container.addSingleton<ISSEService>(SSEService);
     container.addSingleton<IPubSubService>(PubSubService);
     container.addSingleton<IBackupDataService>(BackupDataService);
   }

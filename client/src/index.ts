@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
 import { App } from "./app/app";
-import { HomeController } from "./controllers/HomeController";
 import { DIContainerHelper } from "@/helpers/DIContainerHelper";
+import { HomeController } from "./controllers/HomeController";
 import { ChatroomsController } from "./controllers/ChatroomsController";
 import { ChatsController } from "./controllers/ChatsController";
 
