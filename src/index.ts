@@ -5,6 +5,8 @@ import { ControllerHome } from "./controllers/controllerHome";
 import { ControllerAbout } from "./controllers/controllerAbout";
 import { ControllerTodo } from "./controllers/controllerTodo";
 import { DIContainerHelper } from "@/helpers/DIContainerHelper";
+import { ChatroomsController } from "./controllers/ChatroomsController";
+
 DIContainerHelper.buildDIContainer();
 
 export class MyApp extends App {
@@ -15,6 +17,7 @@ export class MyApp extends App {
 
     const router = this.getRouter();
     router.addRoute("/", ControllerHome);
+    router.addRoute("/chats", ChatroomsController);
     router.addRoute("/about", ControllerAbout);
     router.addRoute("/todos/:todoId", ControllerTodo);
 

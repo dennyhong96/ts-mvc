@@ -1,5 +1,7 @@
+import { AuthModel } from "@/models/AuthModel";
 import { QueryParams } from "@/router/router";
-import { ViewBase } from "@/views/viewBase";
+import { PubSubService } from "@/services/PubSubService";
+import { BaseView } from "@/views/BaseView";
 import { inject } from "inversify-props";
 import { MyApp } from "..";
 import { Controller } from "./controller";
@@ -9,7 +11,10 @@ import { Controller } from "./controller";
  * Here we render parts common to all pages, and handle events in those parts.
  */
 export class ControllerBase extends Controller {
-  @inject("ViewBase") baseView!: ViewBase;
+  @inject() baseView!: BaseView;
+  @inject() authModel!: AuthModel;
+
+  pubsub = new PubSubService();
 
   // private masterPage: MasterPage;
   protected pageContainer!: HTMLElement;
@@ -19,12 +24,35 @@ export class ControllerBase extends Controller {
   }
 
   public load(params: QueryParams): void {
+    console.log("load called");
     super.load(params);
-    const appRootElement = this.app.getAppBody();
-    this.baseView.registerContainer(appRootElement);
-    this.render(appRootElement, this.baseView.render());
-    this.pageContainer = appRootElement.querySelector(".page-container") as HTMLElement;
+    this.renderBase();
+    this.pubsub.subscribe(this.renderBase.bind(this));
     this.loadPage(params);
+  }
+
+  public renderBase(): void {
+    const appRootElement = this.app.getAppBody();
+    this.render(
+      appRootElement,
+      this.baseView.render({
+        username: this.authModel.state.username,
+        logout: this.logout.bind(this),
+      }),
+    );
+    this.pageContainer = appRootElement.querySelector(".page-container") as HTMLElement;
+  }
+
+  public login(username: string): void {
+    this.authModel.login(username);
+    this.pubsub.publish();
+    this.app.getRouter().navigate("/chats");
+  }
+
+  public logout(): void {
+    this.authModel.logout();
+    this.pubsub.publish();
+    this.app.getRouter().navigate("/");
   }
 
   // @ts-ignore
