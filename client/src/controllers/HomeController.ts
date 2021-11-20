@@ -2,6 +2,7 @@ import { inject } from "inversify-props";
 import { ControllerBase } from "./BaseController";
 import { HomeView } from "@/views/HomeView";
 import { MyApp } from "..";
+import { QueryParams } from "@/router/router";
 
 export class HomeController extends ControllerBase {
   @inject() private homeView!: HomeView;
@@ -12,8 +13,7 @@ export class HomeController extends ControllerBase {
     this.homeView.registerContainer(this.pageContainer);
   }
 
-  // @ts-ignore
-  protected async loadPage(params: QueryParams): Promise<void> {
+  protected async loadPage(_params: QueryParams): Promise<void> {
     if (this.authModel.state.userId) {
       this.app.getRouter().navigate("/chats");
       return;

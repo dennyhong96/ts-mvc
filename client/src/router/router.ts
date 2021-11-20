@@ -209,8 +209,7 @@ export class Router {
   }
 
   /** Handles popstate event. */
-  // @ts-ignore
-  private onPopState(ev: PopStateEvent): void {
+  private onPopState(_ev: PopStateEvent): void {
     this.loadController();
   }
 }

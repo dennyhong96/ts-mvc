@@ -13,9 +13,6 @@ export const initialChatroomState: IChatroomsState = {
 export class ChatroomsModel extends Model<IChatroomsState> implements IModel<IChatroomsState> {
   constructor() {
     super({ ...initialChatroomState });
-
-    // @ts-ignore
-    window.chatroomsModel = this;
   }
 
   async loadChatrooms(): Promise<void> {

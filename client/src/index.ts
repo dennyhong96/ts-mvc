@@ -9,10 +9,8 @@ import { ChatsController } from "./controllers/ChatsController";
 DIContainerHelper.buildDIContainer();
 
 export class MyApp extends App {
-  constructor(appBody: HTMLElement) {
-    super({
-      appBody: appBody,
-    });
+  constructor() {
+    super();
 
     const router = this.getRouter();
     router.addRoute("/", HomeController);
@@ -24,6 +22,6 @@ export class MyApp extends App {
 }
 
 function main() {
-  new MyApp(document.getElementById("#root")!);
+  new MyApp();
 }
 window.addEventListener("load", main);

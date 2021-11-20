@@ -4,11 +4,12 @@ import { MyApp } from "..";
 import { ChatroomsModel } from "@/models/ChatroomsModel";
 import { ChatroomsView } from "@/views/ChatroomsView";
 import { ISSEService } from "@/types/interfaces/services/ISSEService";
+import { QueryParams } from "@/router/router";
 
 export class ChatroomsController extends ControllerBase {
-  @inject() private chatroomsView!: ChatroomsView;
-  @inject() private chatroomsModel!: ChatroomsModel;
   @inject() private SSEService!: ISSEService;
+  @inject() private chatroomsModel!: ChatroomsModel;
+  @inject() private chatroomsView!: ChatroomsView;
 
   constructor(public app: MyApp) {
     super(app);
@@ -16,8 +17,7 @@ export class ChatroomsController extends ControllerBase {
     this.chatroomsView.registerContainer(this.pageContainer);
   }
 
-  // @ts-ignore
-  protected async loadPage(params: QueryParams): Promise<void> {
+  protected async loadPage(_params: QueryParams): Promise<void> {
     if (!this.authModel.state.userId) {
       this.app.getRouter().navigate("/");
       return;

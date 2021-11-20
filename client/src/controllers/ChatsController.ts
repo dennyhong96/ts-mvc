@@ -9,11 +9,11 @@ import { ChatsListView } from "@/views/ChatsListView";
 import { ISSEService } from "@/types/interfaces/services/ISSEService";
 
 export class ChatsController extends ControllerBase {
+  @inject() private SSEService!: ISSEService;
+  @inject() private chatsModel!: ChatsModel;
   @inject() private chatsView!: ChatsView;
   @inject() private chatsFormView!: ChatsFormView;
   @inject() private chatsListView!: ChatsListView;
-  @inject() private chatsModel!: ChatsModel;
-  @inject() private SSEService!: ISSEService;
 
   constructor(public app: MyApp) {
     super(app);

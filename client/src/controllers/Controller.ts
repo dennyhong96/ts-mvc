@@ -20,8 +20,7 @@ export class Controller {
    *    $(this.app.getAppBody()).empty().off();
    * Your override should call the base class method.
    */
-  // @ts-ignore
-  public load(params: QueryParams): void {
+  public load(_params: QueryParams): void {
     this.loaded = true;
   }
 
@@ -60,8 +59,7 @@ export interface ControllerClass {
 }
 
 export class PageNotFoundController extends Controller {
-  // @ts-ignore
-  public load(params: QueryParams): void {
+  public load(_params: QueryParams): void {
     App.getInstance().getAppBody().innerHTML = '<div class="page-not-found">Page not found</div>';
   }
 }

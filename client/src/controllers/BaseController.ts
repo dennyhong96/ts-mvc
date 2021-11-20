@@ -11,13 +11,12 @@ import { Controller } from "./Controller";
  * Here we render parts common to all pages, and handle events in those parts.
  */
 export class ControllerBase extends Controller {
-  @inject() baseView!: BaseView;
-  @inject() authModel!: AuthModel;
   @inject() pubSubService!: IPubSubService;
-  public pubsub = this.pubSubService;
+  @inject() authModel!: AuthModel;
+  @inject() baseView!: BaseView;
 
-  // public pubsub = new PubSubService();
   public routeParams: QueryParams = {};
+  public pubsub = this.pubSubService;
 
   // private masterPage: MasterPage;
   protected pageContainer!: HTMLElement;
@@ -63,8 +62,7 @@ export class ControllerBase extends Controller {
     this.app.getRouter().navigate("/");
   }
 
-  // @ts-ignore
-  protected loadPage(params: QueryParams): void {
+  protected loadPage(_params: QueryParams): void {
     // Overwrite
   }
 }

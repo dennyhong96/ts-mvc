@@ -17,9 +17,6 @@ export class ChatsModel extends Model<IChatsState> implements IModel<IChatsState
 
   constructor() {
     super({ ...initialChatsState });
-
-    // @ts-ignore
-    window.chatroomsModel = this;
   }
 
   async postChatsMesssage(payload: Pick<IChat, "message" | "chatroomId">): Promise<void> {
