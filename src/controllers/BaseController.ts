@@ -4,7 +4,7 @@ import { PubSubService } from "@/services/PubSubService";
 import { BaseView } from "@/views/BaseView";
 import { inject } from "inversify-props";
 import { MyApp } from "..";
-import { Controller } from "./controller";
+import { Controller } from "./Controller";
 
 /**
  * This is the viewBase class for all controllers in this app.
@@ -14,7 +14,8 @@ export class ControllerBase extends Controller {
   @inject() baseView!: BaseView;
   @inject() authModel!: AuthModel;
 
-  pubsub = new PubSubService();
+  public pubsub = new PubSubService();
+  public params: QueryParams = {};
 
   // private masterPage: MasterPage;
   protected pageContainer!: HTMLElement;
@@ -26,6 +27,7 @@ export class ControllerBase extends Controller {
   public load(params: QueryParams): void {
     console.log("load called");
     super.load(params);
+    this.params = params;
     this.renderBase();
     this.pubsub.subscribe(this.renderBase.bind(this));
     this.loadPage(params);

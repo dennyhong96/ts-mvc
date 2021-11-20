@@ -1,5 +1,5 @@
 import { inject } from "inversify-props";
-import { ControllerBase } from "./controllerBase";
+import { ControllerBase } from "./BaseController";
 import { MyApp } from "..";
 import { ChatroomsView } from "@/views/ChatroomsView";
 import { ChatroomsModel } from "@/models/ChatroomsModel";

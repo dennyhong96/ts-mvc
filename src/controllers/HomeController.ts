@@ -1,9 +1,9 @@
 import { inject } from "inversify-props";
-import { ControllerBase } from "./controllerBase";
+import { ControllerBase } from "./BaseController";
 import { HomeView } from "@/views/HomeView";
 import { MyApp } from "..";
 
-export class ControllerHome extends ControllerBase {
+export class HomeController extends ControllerBase {
   @inject() private homeView!: HomeView;
 
   constructor(public app: MyApp) {

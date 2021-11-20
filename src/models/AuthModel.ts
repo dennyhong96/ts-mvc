@@ -13,6 +13,9 @@ export const initialAuthState: IAuthState = {
 export class AuthModel extends Model<IAuthState> implements IModel<IAuthState> {
   constructor() {
     super({ ...initialAuthState });
+
+    // @ts-ignore
+    window.authModel = this;
   }
 
   public login(username: string): void {

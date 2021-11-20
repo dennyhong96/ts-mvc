@@ -1,6 +1,6 @@
-import { View } from "@/views/View";
 import { injectable } from "inversify-props";
 
+import { View } from "@/views/View";
 import styles from "@/styles/Modal.module.scss";
 import closeIcon from "@/assets/icons/close.svg";
 

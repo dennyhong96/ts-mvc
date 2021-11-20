@@ -1,5 +1,5 @@
 import { App } from "../app/app";
-import { Controller, ControllerClass, PageNotFoundController } from "../controllers/controller";
+import { Controller, ControllerClass, PageNotFoundController } from "@/controllers/Controller";
 
 /**
  * The router is responsible for unloading and loading controllers when a page navigation

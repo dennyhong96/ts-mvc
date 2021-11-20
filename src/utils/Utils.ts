@@ -11,4 +11,8 @@ export class Utils {
       return [null, error];
     }
   }
+
+  public static async sleep(duration = 500): Promise<void> {
+    await new Promise((res) => setTimeout(res, duration));
+  }
 }

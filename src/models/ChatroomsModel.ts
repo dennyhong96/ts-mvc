@@ -21,18 +21,21 @@ export const initialChatroomState: { chatrooms: IChatroom[] } = {
 export class ChatroomsModel extends Model<IChatsState> implements IModel<IChatsState> {
   constructor() {
     super({ ...initialChatroomState });
+
+    // @ts-ignore
+    window.chatroomsModel = this;
   }
 
   async loadChatrooms(): Promise<void> {
-    await new Promise((res) => setTimeout(res, 2500));
+    await Utils.sleep();
     this.state.chatrooms = [
       {
-        id: Utils.generateId("cr"),
+        id: `cr-1`,
         name: "Chatroom 1",
         onlineCount: 0,
       },
       {
-        id: Utils.generateId("cr"),
+        id: `cr-2`,
         name: "Chatroom 2",
         onlineCount: 0,
       },
