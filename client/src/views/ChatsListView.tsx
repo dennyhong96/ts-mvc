@@ -23,19 +23,42 @@ export class ChatsListView extends View {
     const domTree = (
       <div className={styles.chatsList}>
         <ul>
-          {chats.map((c) => {
+          {chats.map((c, i) => {
+            let displayDateTime = false;
+            const prevChatItem = chats[i - 1];
+            if (
+              !prevChatItem ||
+              (prevChatItem &&
+                new Date(c.createdOn).getTime() - new Date(prevChatItem.createdOn).getTime() >
+                  1000 * 60 * 3)
+            ) {
+              displayDateTime = true;
+            }
             return (
-              <li
-                className={this.cx(styles.chatMessage, {
-                  [styles.myMessage]: c.username === username,
-                })}
-                data-chat-id={c.id}
-              >
-                <div>
-                  <p>{c.message}</p>
-                  {c.username !== username ? (
-                    <div>{Utils.generateAvatarText(c.username)}</div>
-                  ) : null}
+              <li data-chat-id={c.id}>
+                {displayDateTime ? (
+                  <small>
+                    {new Date(c.createdOn).toLocaleTimeString("en-US", {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </small>
+                ) : null}
+                <div
+                  className={this.cx(styles.chatMessage, {
+                    [styles.myMessage]: c.username === username,
+                  })}
+                >
+                  <div>
+                    <p>{c.message}</p>
+                    {c.username !== username ? (
+                      <div>{Utils.generateAvatarText(c.username)}</div>
+                    ) : null}
+                  </div>
                 </div>
               </li>
             );
