@@ -5,6 +5,8 @@ import { AuthModel } from "@/models/AuthModel";
 import { Controller } from "@/controllers/Controller";
 import { IPubSubService } from "@/types/interfaces/services/IPubSubService";
 import { BaseView } from "@/views/BaseView";
+import { ChatroomsModel } from "@/models/ChatroomsModel";
+import { ISSEService } from "@/types/interfaces/services/ISSEService";
 
 /**
  * This is the viewBase class for all controllers in this app.
@@ -14,6 +16,8 @@ export class ControllerBase extends Controller {
   @inject() pubSubService!: IPubSubService;
   @inject() authModel!: AuthModel;
   @inject() baseView!: BaseView;
+  @inject() chatroomsModel!: ChatroomsModel;
+  @inject() SSEService!: ISSEService;
 
   public routeParams: QueryParams = {};
   public pubsub = this.pubSubService;
@@ -30,6 +34,8 @@ export class ControllerBase extends Controller {
     this.routeParams = params;
     this.renderBase();
     this.pubsub.subscribe(AuthModel.name, this.renderBase);
+    this.pubsub.subscribe(ChatroomsModel.name, this.renderBase);
+    this.SSEService.registerEventsource(`${process.env.API_URL}/chatrooms/sse`, this.loadChatrooms);
     this.loadPage(params);
   }
 
@@ -43,8 +49,11 @@ export class ControllerBase extends Controller {
     this.render(
       appRootElement,
       this.baseView.render({
-        username: this.authModel.state.username,
+        user: this.authModel.state,
         logout: this.logout.bind(this),
+        users:
+          this.chatroomsModel.state.chatrooms.find((cr) => cr.id === this.routeParams.chatroomId)
+            ?.onlineUsers ?? [],
       }),
     );
     this.pageContainer = this.baseView.pageContainer;
@@ -61,6 +70,11 @@ export class ControllerBase extends Controller {
     this.pubsub.publish(AuthModel.name);
     this.app.getRouter().navigate("/");
   }
+
+  public loadChatrooms = (async () => {
+    await this.chatroomsModel.loadChatrooms();
+    this.pubsub.publish(ChatroomsModel.name);
+  }).bind(this);
 
   protected loadPage(_params: QueryParams): void {
     // Overwrite

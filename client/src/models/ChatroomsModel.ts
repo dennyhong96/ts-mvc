@@ -4,6 +4,7 @@ import { Model } from "@/models/Model";
 import { IChatroomsState } from "@/types/interfaces/IChatroomState";
 import { IModel } from "@/types/interfaces/models/IModel";
 import { IChatroomsRepository } from "@/types/interfaces/services/repositories/IChatroomsRepository";
+import { IAuthState } from "@/types/interfaces/IAuthState";
 
 export const initialChatroomState: IChatroomsState = {
   chatrooms: [],
@@ -22,7 +23,7 @@ export class ChatroomsModel extends Model<IChatroomsState> implements IModel<ICh
     this.state.chatrooms = chatrooms;
   }
 
-  async enterChatroom(chatroomId: string): Promise<void> {
-    await this.chatroomsRepository.post(chatroomId);
+  async enterChatroom(chatroomId: string, user: IAuthState): Promise<void> {
+    await this.chatroomsRepository.post(chatroomId, user);
   }
 }

@@ -6,10 +6,8 @@ import { ControllerBase } from "@/controllers/BaseController";
 import { ChatsView } from "@/views/ChatsView";
 import { ChatsFormView } from "@/views/ChatsFormView";
 import { ChatsListView } from "@/views/ChatsListView";
-import { ISSEService } from "@/types/interfaces/services/ISSEService";
 
 export class ChatsController extends ControllerBase {
-  @inject() private SSEService!: ISSEService;
   @inject() private chatsModel!: ChatsModel;
   @inject() private chatsView!: ChatsView;
   @inject() private chatsFormView!: ChatsFormView;

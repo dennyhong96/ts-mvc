@@ -3,12 +3,10 @@ import { ControllerBase } from "@/controllers/BaseController";
 import { MyApp } from "..";
 import { ChatroomsModel } from "@/models/ChatroomsModel";
 import { ChatroomsView } from "@/views/ChatroomsView";
-import { ISSEService } from "@/types/interfaces/services/ISSEService";
 import { QueryParams } from "@/router/router";
 
 export class ChatroomsController extends ControllerBase {
-  @inject() private SSEService!: ISSEService;
-  @inject() private chatroomsModel!: ChatroomsModel;
+  // @inject() private SSEService!: ISSEService;
   @inject() private chatroomsView!: ChatroomsView;
 
   constructor(public app: MyApp) {
@@ -43,13 +41,13 @@ export class ChatroomsController extends ControllerBase {
     );
   }).bind(this);
 
-  public loadChatrooms = (async () => {
-    await this.chatroomsModel.loadChatrooms();
-    this.pubsub.publish(ChatroomsModel.name);
-  }).bind(this);
+  // public loadChatrooms = (async () => {
+  //   await this.chatroomsModel.loadChatrooms();
+  //   this.pubsub.publish(ChatroomsModel.name);
+  // }).bind(this);
 
   public async joinChatroom(chatroomId: string): Promise<void> {
-    await this.chatroomsModel.enterChatroom(chatroomId);
+    await this.chatroomsModel.enterChatroom(chatroomId, this.authModel.state);
     this.app.navigate(`/chats/${chatroomId}`);
   }
 }
