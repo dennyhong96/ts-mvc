@@ -47,7 +47,7 @@ export class ControllerBase extends Controller {
         logout: this.logout.bind(this),
       }),
     );
-    this.pageContainer = appRootElement.querySelector(".page-container") as HTMLElement;
+    this.pageContainer = this.baseView.pageContainer;
   }).bind(this);
 
   public login(username: string): void {

@@ -19,7 +19,7 @@ export class App {
     App.instance = this;
     this.options = { ...DefaultAppSettings, ...options };
     if (!this.options.appBody) {
-      const el = document.createElement("div");
+      const el = <div id="root" />;
       document.body.appendChild(el);
       this.options.appBody = el;
     }
