@@ -11,6 +11,7 @@ interface IChatroom {
   id: string;
   name: string;
   onlineCount: number;
+  onlineUsers: IUser[];
 }
 interface IChat {
   id: string;
@@ -30,6 +31,10 @@ interface DB {
   versions: Versions;
   chatrooms: Chatrooms;
   chats: Chats;
+}
+interface IUser {
+  username: string;
+  userId: string;
 }
 
 const SSE_INTERVAL = 100;
@@ -89,9 +94,17 @@ app.get("/chatrooms/sse", (req, res) => {
 
 app.post("/chatrooms/:chatroomId", async (req, res) => {
   const chatroomId = req.params.chatroomId;
+  const user: IUser = req.body;
   const db = await dbGet();
-  db.chatrooms[chatroomId].onlineCount++;
-  db.versions["CHAT_ROOM"] = generateId();
+  if (
+    !db.chatrooms[chatroomId].onlineUsers.find(
+      (u) => u.username.toLowerCase() === user.username.toLowerCase()
+    )
+  ) {
+    db.chatrooms[chatroomId].onlineUsers.push(user);
+    db.chatrooms[chatroomId].onlineCount++;
+    db.versions["CHAT_ROOM"] = generateId();
+  }
   const updatedDB = await dbPut(db);
   res.status(200).json(Object.values(updatedDB.chatrooms));
 });
