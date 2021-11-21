@@ -15,4 +15,11 @@ export class Utils {
   public static async sleep(duration = 500): Promise<void> {
     await new Promise((res) => setTimeout(res, duration));
   }
+
+  public static generateAvatarText(username: string): string {
+    return username
+      .split(" ")
+      .map((p) => p.slice(0, 1).toUpperCase())
+      .join("");
+  }
 }

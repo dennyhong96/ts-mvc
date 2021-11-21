@@ -14,6 +14,14 @@ body,
   -webkit-font-smoothing: antialiased;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(131, 125, 255, 0.25);
+}
+
 *,
 *::before,
 *::after {
@@ -53,6 +61,11 @@ input {
   border: none;
   font: inherit;
   color: inherit;
+
+  &:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 1px #837dff;
+  }
 }
 
 button {

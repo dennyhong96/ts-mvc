@@ -58,8 +58,10 @@ export class ChatsController extends ControllerBase {
       this.chatsView.listSlot,
       this.chatsListView.render({
         chats: this.chatsModel.state.chats,
+        username: this.authModel.state.username,
       }),
     );
+    this.chatsListView.scrollToBottom();
   }).bind(this);
 
   protected renderForm(): void {
